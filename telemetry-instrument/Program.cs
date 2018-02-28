@@ -12,7 +12,6 @@ namespace TelemetryInstrument
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-
         static void Main(string[] args)
         {
             ServiceBase[] ServicesToRun = new ServiceBase[] { new TelemetryInstrumentService(args) };

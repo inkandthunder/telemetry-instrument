@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using log4net;
+using System.Threading;
 
 namespace TelemetryInstrument
 {
     public partial class TelemetryInstrumentService : ServiceBase
     {
-
-        //private IContainer components;
-        //private EventLog eventLog1;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+        PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
 
         public TelemetryInstrumentService(string[] args)
         {
@@ -31,43 +28,49 @@ namespace TelemetryInstrument
                 logName = args[1];
             }
             eventLog1 = new System.Diagnostics.EventLog();
-            if (!System.Diagnostics.EventLog.SourceExists(eventSourceName))
+            if (!EventLog.SourceExists(eventSourceName))
             {
-                System.Diagnostics.EventLog.CreateEventSource(eventSourceName, logName);
+                EventLog.CreateEventSource(eventSourceName, logName);
             }
             eventLog1.Source = eventSourceName;
             eventLog1.Log = logName;
-
         }
 
         protected override void OnStart(string[] args)
         {
             eventLog1.WriteEntry("Starting Telemetry Instrument at " + DateTime.Now.ToShortTimeString());
+            log.Info("Telemetry Instrument is starting up...");
 
-            // Update the service state to Start Pending.  
-            ServiceStatus serviceStatus = new ServiceStatus();
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
-            serviceStatus.dwWaitHint = 100000;
-            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            try
+            {
+                // Update the service state to Start Pending.  
+                ServiceStatus serviceStatus = new ServiceStatus();
+                serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
+                serviceStatus.dwWaitHint = 100000;
+                SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
-            // Set up a timer to trigger every minute
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 60000;
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
-            timer.Start();
+                // Set up a timer to trigger every minute
+                System.Timers.Timer timer = new System.Timers.Timer();
+                timer.Interval = 30000;
+                timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
+                timer.Start();
 
-            // Update the service state to Running.  
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
-            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-
+                // Update the service state to Running.  
+                serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
+                SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Telemetry Instrument did not start successfully", ex);
+            }
         }
-
-        private int eventId = 1;
 
         public void OnTimer(object sender, System.Timers.ElapsedEventArgs args)
         {
-            //TODO: Insert monitoring activities here
-            eventLog1.WriteEntry("Monitoring the system", EventLogEntryType.Information, eventId++);
+            CounterSample cs1 = cpuCounter.NextSample();
+            Thread.Sleep(100);
+            CounterSample cs2 = cpuCounter.NextSample();
+            float finalCpuCounter = CounterSample.Calculate(cs1, cs2);
         }
 
 
@@ -75,22 +78,28 @@ namespace TelemetryInstrument
         {
             eventLog1.WriteEntry("Stopping Telemetry Instrument at " + DateTime.Now.ToShortTimeString());
 
-            // Update the service state to Stop Pending.  
-            ServiceStatus serviceStatus = new ServiceStatus();
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_STOP_PENDING;
-            serviceStatus.dwWaitHint = 100000;
-            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            try
+            {
+                // Update the service state to Stop Pending.  
+                ServiceStatus serviceStatus = new ServiceStatus();
+                serviceStatus.dwCurrentState = ServiceState.SERVICE_STOP_PENDING;
+                serviceStatus.dwWaitHint = 100000;
+                SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
 
-            // Update the service state to Stopped.  
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
-            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-
+                // Update the service state to Stopped.  
+                serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
+                SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Telemetry Instrument did not stop successfully", ex);
+            }
         }
 
         protected override void OnContinue()
         {
-            eventLog1.WriteEntry("In onContinue");
+
         }
 
         public enum ServiceState

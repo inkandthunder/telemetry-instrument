@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_5356F5E07066F73CA06C735DC7AA7825"
+        "OwnerKey" = "8:_B62D6EE8B9E74797BF65227A9EED5E64"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B62D6EE8B9E74797BF65227A9EED5E64"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -28,13 +34,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_FFE9E54EB3A0E018E95B9CFB7233C338"
+        "OwnerKey" = "8:_B62D6EE8B9E74797BF65227A9EED5E64"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B62D6EE8B9E74797BF65227A9EED5E64"
+        "OwnerKey" = "8:_5356F5E07066F73CA06C735DC7AA7825"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_FFE9E54EB3A0E018E95B9CFB7233C338"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -55,6 +67,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -71,6 +99,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -156,6 +192,37 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5356F5E07066F73CA06C735DC7AA7825"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_5356F5E07066F73CA06C735DC7AA7825"
+                    {
+                    "Name" = "8:log4net.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:log4net.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_59DEFD440DAD4695A6D04AEAEBE6FAB7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FFE9E54EB3A0E018E95B9CFB7233C338"
             {
             "AssemblyRegister" = "3:1"
@@ -244,7 +311,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Telemetry Instrument"
         "ProductCode" = "8:{B40F4EB3-75B6-4084-9FA0-7BB47D3EB898}"
-        "PackageCode" = "8:{67DACCAB-9E65-4F80-84B7-82CD0EC6483C}"
+        "PackageCode" = "8:{18DEFCF0-872D-41AB-AB65-1819967E4600}"
         "UpgradeCode" = "8:{0A3B8FFE-E592-4632-A183-3D8A56F02912}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -765,7 +832,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B62D6EE8B9E74797BF65227A9EED5E64"
             {
-            "SourcePath" = "8:..\\telemetry-instrument\\obj\\Debug\\telemetry-instrument.exe"
+            "SourcePath" = "8:..\\telemetry-instrument\\obj\\Debug\\TelemetryInstrument.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_59DEFD440DAD4695A6D04AEAEBE6FAB7"
