@@ -1,4 +1,4 @@
-﻿namespace telemetry_instrument
+﻿namespace TelemetryInstrument
 {
     partial class ProjectInstaller
     {
@@ -41,7 +41,7 @@
             // 
             this.serviceInstaller1.Description = "Performance data collection for Telemetry Server";
             this.serviceInstaller1.DisplayName = "Telemetry Instrument";
-            this.serviceInstaller1.ServiceName = "TelemetryInstrumentService";
+            this.serviceInstaller1.ServiceName = "telemetry_instrumentService";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller

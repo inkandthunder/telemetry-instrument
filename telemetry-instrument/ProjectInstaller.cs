@@ -6,7 +6,7 @@ using System.Configuration.Install;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace telemetry_instrument
+namespace TelemetryInstrument
 {
     [RunInstaller(true)]
     public partial class ProjectInstaller : System.Configuration.Install.Installer
@@ -18,7 +18,7 @@ namespace telemetry_instrument
 
         protected override void OnBeforeInstall(IDictionary savedState)
         {
-            string parameter = "MySource1\" \"MyLogFile1";
+            string parameter = "Telemetry Instrument Alerts\" \"Telemetry Instrument Log";
             Context.Parameters["assemblypath"] = "\"" + Context.Parameters["assemblypath"] + "\" \"" + parameter + "\"";
             base.OnBeforeInstall(savedState);
         }

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TelemetryInstrument")]
+[assembly: AssemblyTitle("TelemetryInstrumentConsole")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Aon")]
-[assembly: AssemblyProduct("TelemetryInstrument")]
+[assembly: AssemblyProduct("TelemetryInstrumentConsole")]
 [assembly: AssemblyCopyright("Copyright © Aon 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0154aa3b-4a1d-44af-aee9-5972809b561e")]
+[assembly: Guid("578492fe-4ef5-454b-bea7-39f0a73ab4d3")]
 
 // Version information for an assembly consists of the following four values:
 //

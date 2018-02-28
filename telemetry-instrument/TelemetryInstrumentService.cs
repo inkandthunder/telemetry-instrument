@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace telemetry_instrument
+namespace TelemetryInstrument
 {
     public partial class TelemetryInstrumentService : ServiceBase
     {
@@ -42,7 +42,7 @@ namespace telemetry_instrument
 
         protected override void OnStart(string[] args)
         {
-            eventLog1.WriteEntry("In OnStart");
+            eventLog1.WriteEntry("Starting Telemetry Instrument at " + DateTime.Now.ToShortTimeString());
 
             // Update the service state to Start Pending.  
             ServiceStatus serviceStatus = new ServiceStatus();
@@ -73,7 +73,7 @@ namespace telemetry_instrument
 
         protected override void OnStop()
         {
-            eventLog1.WriteEntry("In onStop");
+            eventLog1.WriteEntry("Stopping Telemetry Instrument at " + DateTime.Now.ToShortTimeString());
 
             // Update the service state to Stop Pending.  
             ServiceStatus serviceStatus = new ServiceStatus();

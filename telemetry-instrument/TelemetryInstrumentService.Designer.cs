@@ -1,4 +1,4 @@
-﻿namespace telemetry_instrument
+﻿namespace TelemetryInstrument
 {
     partial class TelemetryInstrumentService
     {
@@ -31,9 +31,9 @@
             this.eventLog1 = new System.Diagnostics.EventLog();
             ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).BeginInit();
             // 
-            // TelemetryInstrumentService
+            // telemetry_instrumentService
             // 
-            this.ServiceName = "TelemetryInstrumentService";
+            this.ServiceName = "telemetry_instrumentService";
             ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).EndInit();
 
         }
