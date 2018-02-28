@@ -1,2 +1,2 @@
 language: csharp
-solution: telemetry-server.sln
+solution: telemetry-instrument.sln
