@@ -39,7 +39,7 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.Description = "System data collection for CSS Telemetry Server";
+            this.serviceInstaller1.Description = "Performance data collection for Telemetry Server";
             this.serviceInstaller1.DisplayName = "Telemetry Instrument";
             this.serviceInstaller1.ServiceName = "TelemetryInstrumentService";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;

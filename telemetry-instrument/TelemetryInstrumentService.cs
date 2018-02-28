@@ -20,13 +20,24 @@ namespace telemetry_instrument
         public TelemetryInstrumentService(string[] args)
         {
             InitializeComponent();
-            eventLog1 = new System.Diagnostics.EventLog();
-            if (!System.Diagnostics.EventLog.SourceExists("MySource"))
+            string eventSourceName = "Telemetry Instrument Alerts";
+            string logName = "Telemetry Instrument Log";
+            if (args.Count() > 0)
             {
-                System.Diagnostics.EventLog.CreateEventSource("MySource", "MyNewLog");
+                eventSourceName = args[0];
             }
-            eventLog1.Source = "MySource";
-            eventLog1.Log = "MyNewLog";
+            if (args.Count() > 1)
+            {
+                logName = args[1];
+            }
+            eventLog1 = new System.Diagnostics.EventLog();
+            if (!System.Diagnostics.EventLog.SourceExists(eventSourceName))
+            {
+                System.Diagnostics.EventLog.CreateEventSource(eventSourceName, logName);
+            }
+            eventLog1.Source = eventSourceName;
+            eventLog1.Log = logName;
+
         }
 
         protected override void OnStart(string[] args)
