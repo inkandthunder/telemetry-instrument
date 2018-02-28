@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryInstrument", "telemetry-instrument\TelemetryInstrument.csproj", "{0154AA3B-4A1D-44AF-AEE9-5972809B561E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryInstrument", "TelemetryInstrument\TelemetryInstrument.csproj", "{0154AA3B-4A1D-44AF-AEE9-5972809B561E}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TelemetryInstrumentInstaller", "TelemetryInstrumentInstaller\TelemetryInstrumentInstaller.vdproj", "{61367DA8-D5CC-4D37-AFB9-749F7FCD81DE}"
 EndProject
