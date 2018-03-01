@@ -21,6 +21,7 @@ namespace TelemetryInstrumentConsole
 
             PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
             PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+            PerformanceCounter sysUptime = new PerformanceCounter("System", "System Up Time");
 
             long memKb;
             GetPhysicallyInstalledSystemMemory(out memKb);
@@ -34,9 +35,9 @@ namespace TelemetryInstrumentConsole
                 float finalCpuCounter = CounterSample.Calculate(cs1, cs2);
                 Console.WriteLine("CPU: " + finalCpuCounter);
                 Console.WriteLine("Processes: " + Process.GetProcesses().Count());
-                Console.WriteLine("Handles: ");
-                Console.WriteLine("Threads: ");
-                Console.WriteLine("Uptime: ");
+                //Console.WriteLine("Handles: ");
+                //Console.WriteLine("Threads: ");
+                Console.WriteLine("Uptime: " + sysUptime.NextValue());
                 Console.WriteLine("Used Memory: " + ramCounter.NextValue().ToString("#.##"));
                 Console.WriteLine("Installed Memory: " + (memKb / 1024));
 
