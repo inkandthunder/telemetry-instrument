@@ -65,6 +65,10 @@ namespace TelemetryInstrument
                 serviceStatus.dwWaitHint = 100000;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
+                //Check host
+                Thread t = new Thread(new ThreadStart(this.checkHost));
+                t.Start();
+
                 // Set up a timer to trigger every minute
                 System.Timers.Timer timer = new System.Timers.Timer();
                 timer.Interval = 30000;
@@ -77,55 +81,58 @@ namespace TelemetryInstrument
 
                 log.Info("Startup Successful. Checking hostname entry...");
 
-                long memKb;
-                GetPhysicallyInstalledSystemMemory(out memKb);
-                Domain domain = Domain.GetComputerDomain();
-                string hostName = Dns.GetHostName();
-                string cs = ReadSetting("cs");
-                SqlConnection sqlConnection = new SqlConnection(cs);
-
-                try
-                {
-                    using (SqlCommand checkHostname = new SqlCommand("SELECT COUNT(*) from Machines where Hostname = @hostname", sqlConnection))
-                    {
-                        sqlConnection.Open();
-                        checkHostname.Parameters.AddWithValue("@hostname", Environment.MachineName);
-                        int hostCount = (int)checkHostname.ExecuteScalar();
-
-                        //Has Telemetry Instrument run on this host before?
-                        if (hostCount > 0)
-                        {
-                            log.Info(Environment.MachineName + " exists in database");
-                        }
-                        //If not, add the build information to the database
-                        else
-                        {
-                            SqlCommand insertNewHost = new SqlCommand("INSERT INTO Machines (Hostname, IpAddress, OperatingSystem, ProcessorCount, InstalledMemory, Domain) VALUES (@hostname, @ip, @os, @processors, @ram, @domain)", sqlConnection);
-                            insertNewHost.Parameters.AddWithValue("@hostname", Environment.MachineName);
-                            insertNewHost.Parameters.AddWithValue("@ip", Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString());
-                            insertNewHost.Parameters.AddWithValue("@os", Environment.OSVersion.ToString());
-                            insertNewHost.Parameters.AddWithValue("@processors", Environment.ProcessorCount);
-                            insertNewHost.Parameters.AddWithValue("@ram", (memKb / 1024));
-                            insertNewHost.Parameters.AddWithValue("@domain", domain.Name);
-                            int rowsUpdated = insertNewHost.ExecuteNonQuery();
-                            log.Info(Environment.MachineName + " does not exist. " + rowsUpdated + " row(s) added.");
-                        }
-                        sqlConnection.Close();
-                    }
-                }
-                catch (SqlException se)
-                {
-                    log.Error("Database read error", se);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Hostname lookup failure", ex);
-                }
-
             }
             catch (Exception ex)
             {
                 log.Error("Telemetry Instrument did not start successfully", ex);
+            }
+        }
+
+        public void checkHost()
+        {
+            long memKb;
+            GetPhysicallyInstalledSystemMemory(out memKb);
+            Domain domain = Domain.GetComputerDomain();
+            string hostName = Dns.GetHostName();
+            string cs = ReadSetting("cs");
+            SqlConnection sqlConnection = new SqlConnection(cs);
+
+            try
+            {
+                using (SqlCommand checkHostname = new SqlCommand("SELECT COUNT(*) from Machines where Hostname = @hostname", sqlConnection))
+                {
+                    sqlConnection.Open();
+                    checkHostname.Parameters.AddWithValue("@hostname", Environment.MachineName);
+                    int hostCount = (int)checkHostname.ExecuteScalar();
+
+                    //Has Telemetry Instrument run on this host before?
+                    if (hostCount > 0)
+                    {
+                        log.Info(Environment.MachineName + " exists in database");
+                    }
+                    //If not, add the build information to the database
+                    else
+                    {
+                        SqlCommand insertNewHost = new SqlCommand("INSERT INTO Machines (Hostname, IpAddress, OperatingSystem, ProcessorCount, InstalledMemory, Domain) VALUES (@hostname, @ip, @os, @processors, @ram, @domain)", sqlConnection);
+                        insertNewHost.Parameters.AddWithValue("@hostname", Environment.MachineName);
+                        insertNewHost.Parameters.AddWithValue("@ip", Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString());
+                        insertNewHost.Parameters.AddWithValue("@os", Environment.OSVersion.ToString());
+                        insertNewHost.Parameters.AddWithValue("@processors", Environment.ProcessorCount);
+                        insertNewHost.Parameters.AddWithValue("@ram", (memKb / 1024));
+                        insertNewHost.Parameters.AddWithValue("@domain", domain.Name);
+                        int rowsUpdated = insertNewHost.ExecuteNonQuery();
+                        log.Info(Environment.MachineName + " does not exist. " + rowsUpdated + " row(s) added.");
+                    }
+                    sqlConnection.Close();
+                }
+            }
+            catch (SqlException se)
+            {
+                log.Error("Database read error", se);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Hostname lookup failure", ex);
             }
         }
 
@@ -140,20 +147,20 @@ namespace TelemetryInstrument
  
             try
             {
-                using (SqlCommand addPerfValues = new SqlCommand("INSERT INTO MachinePerf (Hostname, TotalCpuUtil, UsedMemory, RunningProcesses, MachineUptime) VALUES (@hostname, @cpu, @mem, @processes, @uptime)", sqlConnection))
+                using (SqlCommand addPerfValues = new SqlCommand("INSERT INTO MachinePerf (Hostname, TotalCpuUtil, UsedMemory, RunningProcesses, MachineUptime, CurrentTime) VALUES (@hostname, @cpu, @mem, @processes, @uptime, @now)", sqlConnection))
                 {
-                    sqlConnection.Open();
-                    SqlCommand findHost = new SqlCommand("SELECT Id FROM Machines where Hostname = @hostname");
+                    SqlCommand findHost = new SqlCommand("SELECT * FROM Machines where Hostname = @hostname", sqlConnection);
+                    findHost.CommandType = System.Data.CommandType.Text;
                     findHost.Parameters.AddWithValue("@hostname", Environment.MachineName);
-                    SqlDataReader reader;
-                    reader = findHost.ExecuteReader();
-                    string hostId = reader["Id"].ToString();
 
+                    sqlConnection.Open();
+                    var hostId = findHost.ExecuteScalar();
                     addPerfValues.Parameters.AddWithValue("@hostname", hostId);
                     addPerfValues.Parameters.AddWithValue("@cpu", finalCpuCounter);
                     addPerfValues.Parameters.AddWithValue("@mem", ramCounter.NextValue().ToString("#.##"));
                     addPerfValues.Parameters.AddWithValue("@processes", Process.GetProcesses().Count());
                     addPerfValues.Parameters.AddWithValue("@uptime", sysUptime.NextValue());
+                    addPerfValues.Parameters.AddWithValue("@now", String.Format("{0:s}", DateTime.Now));
                     int rowsUpdated = addPerfValues.ExecuteNonQuery();
                     sqlConnection.Close();
                 }
@@ -179,7 +186,6 @@ namespace TelemetryInstrument
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_STOP_PENDING;
                 serviceStatus.dwWaitHint = 100000;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-
 
                 // Update the service state to Stopped.  
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
