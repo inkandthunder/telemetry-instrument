@@ -65,16 +65,9 @@ namespace TelemetryInstrument
                 serviceStatus.dwWaitHint = 100000;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
-                //Check host
-                Thread t = new Thread(new ThreadStart(this.checkHost));
-                t.Start();
-
-                // Set up a timer to trigger every minute
-                System.Timers.Timer timer = new System.Timers.Timer();
-                timer.Interval = 30000;
-                timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
-                timer.Start();
-
+                Thread t2 = new Thread(new ThreadStart(this.InitTimer));
+                t2.Start();
+      
                 // Update the service state to Running.  
                 serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
                 SetServiceStatus(this.ServiceHandle, ref serviceStatus);
@@ -86,6 +79,16 @@ namespace TelemetryInstrument
             {
                 log.Error("Telemetry Instrument did not start successfully", ex);
             }
+        }
+
+        private void InitTimer()
+        {
+
+            // Set up a timer to trigger every minute
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 30000;
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
+            timer.Start();
         }
 
         public void checkHost()
@@ -138,6 +141,10 @@ namespace TelemetryInstrument
 
         public void OnTimer(object sender, System.Timers.ElapsedEventArgs args)
         {
+            //Check host
+            Thread t1 = new Thread(new ThreadStart(this.checkHost));
+            t1.Start();
+
             string cs = ReadSetting("cs");
             SqlConnection sqlConnection = new SqlConnection(cs);
             CounterSample cs1 = cpuCounter.NextSample();
